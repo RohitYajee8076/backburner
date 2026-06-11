@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.RohitYajee8076/backburner",
-  "description": "Run long shell commands as background tasks: start builds, test suites, or batch jobs, keep working, then collect the results later",
+  "description": "Run long shell commands as background tasks: start them, keep working, collect the results later",
   "repository": {
     "url": "https://github.com/RohitYajee8076/backburner",
     "source": "github"
