@@ -60,7 +60,7 @@ Tasks-extension support on the roadmap.
 ## Install
 
 ```bash
-pip install -e .
+pip install backburner-mcp
 ```
 
 ### Claude Code
@@ -97,7 +97,7 @@ use `BACKBURNER_ALLOW` / `BACKBURNER_DENY` to scope what may run.
 - [ ] MCP Tasks extension support (spec 2026-07-28) — native `tasks/get`,
       `tasks/cancel` alongside the plain tools
 - [ ] Structured progress reporting (parse % / step markers from output)
-- [ ] PyPI release
+- [x] PyPI release — `pip install backburner-mcp`
 
 ## License
 
