@@ -1,3 +1,5 @@
+<!-- mcp-name: io.github.RohitYajee8076/backburner -->
+
 # backburner
 
 **Put your AI agent's slow work on the back burner. Keep cooking.**

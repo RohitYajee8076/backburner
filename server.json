@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.RohitYajee8076/backburner",
+  "description": "Run long shell commands as background tasks: start builds, test suites, or batch jobs, keep working, then collect the results later",
+  "repository": {
+    "url": "https://github.com/RohitYajee8076/backburner",
+    "source": "github"
+  },
+  "version": "0.1.1",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "backburner-mcp",
+      "version": "0.1.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "BACKBURNER_HOME",
+          "description": "Directory for the task database and log files (default: ~/.backburner)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        },
+        {
+          "name": "BACKBURNER_ALLOW",
+          "description": "Comma-separated regexes; if set, only matching commands may run",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        },
+        {
+          "name": "BACKBURNER_DENY",
+          "description": "Comma-separated regexes; matching commands are always refused (deny wins over allow)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}
