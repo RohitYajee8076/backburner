@@ -168,3 +168,10 @@ def test_cancelled_job_omits_exit_code(manager):
     d = manager.status(job.id).to_dict()
     assert d["status"] == "cancelled"
     assert "exit_code" not in d
+
+
+def test_unicode_output_survives_windows(manager):
+    job = manager.start(f'{PY} -c "print(\'héllo 日本語\')"')
+    done = wait_until_done(manager, job.id)
+    assert done.status == "completed"
+    assert "héllo" in manager.result(job.id)["output"]

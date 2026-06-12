@@ -161,7 +161,9 @@ class JobManager:
         log_file = open(log_path, "w", encoding="utf-8", errors="replace")
         # Children buffer stdout when it's a file, which would make live
         # peeking useless; force line-buffering where the runtime honors it.
-        env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+        # PYTHONIOENCODING: without it, Python child processes on Windows
+        # encode stdout as cp1252 and crash on non-ASCII output.
+        env = {**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8"}
         # New process group so cancel() can kill the command AND any
         # children it spawned (e.g. pytest workers), not just the shell.
         if sys.platform == "win32":
