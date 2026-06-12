@@ -1,8 +1,34 @@
 <!-- mcp-name: io.github.RohitYajee8076/backburner -->
 
-# backburner
+<div align="center">
+
+<img src="docs/banner.png" alt="backburner — background tasks for AI agents" />
+
+<br/>
+<br/>
 
 **Put your AI agent's slow work on the back burner. Keep cooking.**
+
+<b>Background Tasks&nbsp; ◦ &nbsp;Zero Infrastructure&nbsp; ◦ &nbsp;Survives Restarts&nbsp; ◦ &nbsp;Windows & Unix</b>
+
+<br/>
+
+📦 [PyPI](https://pypi.org/project/backburner-mcp/)&nbsp; • &nbsp;🗂️ [MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=backburner)&nbsp; • &nbsp;🐛 [Issues](https://github.com/RohitYajee8076/backburner/issues)&nbsp; • &nbsp;📄 [MIT](LICENSE)
+
+</div>
+
+---
+
+## 📢 Updates
+
+- **v0.2.1** — output with non-ASCII characters (✓, emoji, any non-English text) no
+  longer crashes tasks on Windows.
+- **v0.2.0** — `exit_code` is no longer reported for cancelled/timed-out tasks
+  (it was an artifact of the kill, not a real result); new animated demo below.
+- **v0.1.x** — first release: 5 tools, task timeouts, command allow/deny policy.
+  Listed on the official MCP Registry as `io.github.RohitYajee8076/backburner`.
+
+---
 
 `backburner` is an MCP server that gives any AI assistant (Claude, and any
 other MCP client) the ability to run long shell commands as **background
@@ -12,7 +38,7 @@ it finishes.
 
 ![backburner demo](docs/demo.gif)
 
-## Why
+## 🔥 Why
 
 AI agents are bad at waiting. A tool call that takes 10 minutes blocks the
 whole conversation — or times out and loses the work entirely. The MCP
@@ -21,7 +47,7 @@ specification is formalizing a Tasks pattern for exactly this problem
 that workflow to every client **today** via plain tools, with first-class
 Tasks-extension support on the roadmap.
 
-## Tools
+## 🧰 Tools
 
 | Tool | What it does |
 |------|--------------|
@@ -31,7 +57,7 @@ Tasks-extension support on the roadmap.
 | `cancel_task(task_id)` | Kill the task and its whole process tree |
 | `list_tasks(limit?)` | Recent tasks, newest first |
 
-## Features
+## ✨ Features
 
 - **Survives restarts** — tasks are tracked in SQLite under `~/.backburner/`;
   output is captured to per-task log files. If the server dies mid-task,
@@ -54,7 +80,7 @@ Tasks-extension support on the roadmap.
 - **Tested** — a pytest suite covers the full job lifecycle: completion,
   failure, cancellation, timeouts, crash recovery, and the command policy.
 
-## Install
+## 🚀 Install
 
 ```bash
 pip install backburner-mcp
@@ -79,7 +105,7 @@ claude mcp add backburner -- python -m backburner.server
 }
 ```
 
-## Security note
+## 🔒 Security note
 
 `backburner` executes the shell commands the AI sends it, with your user's
 permissions. That is its job — but treat it like giving your agent a
@@ -87,15 +113,17 @@ terminal. Run it only with clients whose tool-use you review/approve,
 prefer permission modes that require confirmation for `start_task`, and
 use `BACKBURNER_ALLOW` / `BACKBURNER_DENY` to scope what may run.
 
-## Roadmap
+## 🗺️ Roadmap
 
 - [x] Task timeouts and max-runtime limits
 - [x] Allowlist/denylist for commands
+- [x] PyPI release — `pip install backburner-mcp`
+- [x] Listed on the official MCP Registry
 - [ ] MCP Tasks extension support (spec 2026-07-28) — native `tasks/get`,
       `tasks/cancel` alongside the plain tools
+- [ ] Local web dashboard — watch tasks live in the browser
 - [ ] Structured progress reporting (parse % / step markers from output)
-- [x] PyPI release — `pip install backburner-mcp`
 
-## License
+## 📄 License
 
 MIT
