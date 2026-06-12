@@ -10,12 +10,7 @@ tasks** — start a test suite, a build, a scrape, a batch job — then keep
 working and check back for the results, instead of sitting frozen until
 it finishes.
 
-```
-agent: start_task("pytest -q")        ->  { task_id: "a1b2c3d4", status: "working" }
-        ... agent does other useful work ...
-agent: task_status("a1b2c3d4")        ->  { status: "completed", duration_seconds: 312 }
-agent: task_result("a1b2c3d4")        ->  { output: "418 passed in 311.2s" }
-```
+![backburner demo](docs/demo.gif)
 
 ## Why
 
