@@ -159,3 +159,12 @@ def test_start_enforces_policy(manager, monkeypatch):
     monkeypatch.setenv("BACKBURNER_DENY", "forbidden")
     with pytest.raises(PermissionError):
         manager.start("echo forbidden-thing")
+
+
+def test_cancelled_job_omits_exit_code(manager):
+    job = manager.start(f'{PY} -c "import time; time.sleep(30)"')
+    time.sleep(1.0)
+    manager.cancel(job.id)
+    d = manager.status(job.id).to_dict()
+    assert d["status"] == "cancelled"
+    assert "exit_code" not in d

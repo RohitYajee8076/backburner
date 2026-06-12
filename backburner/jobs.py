@@ -82,7 +82,9 @@ class Job:
             d["running_for_seconds"] = round(time.time() - self.created_at)
         if self.finished_at is not None:
             d["duration_seconds"] = round(self.finished_at - self.created_at)
-        if self.exit_code is not None:
+        # Only completed/failed have a meaningful exit code; a killed job's
+        # code is just an artifact of how the OS terminated it.
+        if self.exit_code is not None and self.status in (COMPLETED, FAILED):
             d["exit_code"] = self.exit_code
         return d
 
