@@ -3,13 +3,27 @@ backburner — an MCP server that lets AI agents run long jobs in the
 background and collect the results later, instead of blocking.
 
 Run:  python -m backburner.server
+
+Ported to the MCP 2026-07-28 spec SDK (mcp>=2.0.0). The old high-level class
+`mcp.server.fastmcp.FastMCP` was REMOVED in mcp 2.0; the replacement is
+`mcp.server.MCPServer`. Its `.tool()` decorator and `.run()` entrypoint are
+near-identical, so these five plain tools carry over almost unchanged.
+
+On top of those plain tools we mount the official MCP **Tasks** extension
+(io.modelcontextprotocol/tasks, SEP-2663): a Tasks-capable client can drive the
+same engine through tasks/get, tasks/update, tasks/cancel instead of polling the
+plain tools. See tasks_extension.py — it wraps the SAME JobManager instance, so
+both surfaces see the same jobs.
 """
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server import MCPServer
 
 from backburner.jobs import JobManager
+from backburner.tasks_extension import BackburnerTasksExtension
 
-mcp = FastMCP(
+manager = JobManager()
+
+mcp = MCPServer(
     "backburner",
     instructions=(
         "Run long shell commands as background tasks. Start a task, keep "
@@ -17,8 +31,10 @@ mcp = FastMCP(
         "when it's done. Ideal for test suites, builds, scrapes, batch jobs — "
         "anything too slow to wait for."
     ),
+    # The Tasks extension shares the engine above so a task created via
+    # tools/call is the same job list_tasks/task_status report on.
+    extensions=[BackburnerTasksExtension(manager)],
 )
-manager = JobManager()
 
 
 @mcp.tool()

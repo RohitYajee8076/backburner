@@ -9,7 +9,10 @@
 
 **Put your AI agent's slow work on the back burner. Keep cooking.**
 
-<b>Background Tasks&nbsp; ◦ &nbsp;Zero Infrastructure&nbsp; ◦ &nbsp;Survives Restarts&nbsp; ◦ &nbsp;Windows & Unix</b>
+Background tasks for AI agents that **outlive the conversation** — start a long
+job, close the client, and the result is still waiting when you come back.
+
+<b>Durable &amp; Restart-Proof&nbsp; ◦ &nbsp;Zero Infrastructure&nbsp; ◦ &nbsp;MCP Tasks (2026-07-28)&nbsp; ◦ &nbsp;Windows &amp; Unix</b>
 
 <br/>
 
@@ -21,6 +24,13 @@
 
 ## 📢 Updates
 
+- **v1.0** — implements the official MCP **Tasks** extension
+  ([SEP-2663](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2663),
+  `io.modelcontextprotocol/tasks`). A Tasks-capable client can turn a
+  `start_task` call into a durable task and drive it with `tasks/get`,
+  `tasks/update`, and `tasks/cancel` — the standard async-job protocol — while
+  the five plain tools keep working for every other client. Built against the
+  **2026-07-28** spec (`mcp` 2.0).
 - **v0.2.1** — output with non-ASCII characters (✓, emoji, any non-English text) no
   longer crashes tasks on Windows.
 - **v0.2.0** — `exit_code` is no longer reported for cancelled/timed-out tasks
@@ -30,22 +40,46 @@
 
 ---
 
-`backburner` is an MCP server that gives any AI assistant (Claude, and any
-other MCP client) the ability to run long shell commands as **background
-tasks** — start a test suite, a build, a scrape, a batch job — then keep
-working and check back for the results, instead of sitting frozen until
-it finishes.
+`backburner` is an MCP server that gives any AI assistant — Claude, ChatGPT,
+Gemini, GitHub Copilot, Cursor, and any other MCP client — the ability to run
+long shell commands as **background tasks** — start a test suite, a build, a
+scrape, a batch job — then keep working and check back for the results, instead
+of sitting frozen until it finishes.
 
 ![backburner demo](docs/demo.gif)
 
-## 🔥 Why
+## 🔥 Why not just use my client's built-in background mode?
 
-AI agents are bad at waiting. A tool call that takes 10 minutes blocks the
-whole conversation — or times out and loses the work entirely. The MCP
-specification is formalizing a Tasks pattern for exactly this problem
-(extension finalized in the 2026-07-28 spec release); `backburner` brings
-that workflow to every client **today** via plain tools, with first-class
-Tasks-extension support on the roadmap.
+Because that lives **inside the conversation** — it disappears the moment the
+session ends. Close the chat, restart the client, reboot the laptop, and any
+in-session background work (and its output) is gone.
+
+`backburner` keeps every task and its full output **on disk** (SQLite +
+per-task log files under `~/.backburner/`), so your work outlives the session
+that started it:
+
+- **Start now, collect later — even in a different chat.** A task you launch
+  today is still listed, with its result, in a brand-new session tomorrow.
+- **Restart-proof.** State survives the server, the client, and the machine
+  restarting. Finished tasks keep their output; a task cut off by a crash is
+  honestly marked `interrupted`, never silently dropped.
+- **No waiting, no blocking.** A 10-minute tool call no longer freezes the
+  conversation or times out and loses the work.
+
+See it for yourself — a real two-process proof (no mock-ups):
+
+```bash
+python docs/demo_restart.py
+```
+
+It starts a job in one process, exits, then a **separate** process — which
+never saw the task id — finds the finished work waiting on disk.
+
+Built on the MCP **Tasks** pattern, formalized in the 2026-07-28 spec release
+([SEP-2663](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2663)):
+`backburner` speaks it natively (`tasks/get` / `tasks/update` / `tasks/cancel`)
+**and** exposes the same engine as plain tools, so it works with every client
+today.
 
 ## 🧰 Tools
 
@@ -82,6 +116,15 @@ Tasks-extension support on the roadmap.
 
 ## 🚀 Install
 
+`backburner` is a standard stdio MCP server — it works with **any MCP-compatible
+client**, including:
+
+Claude Code · Claude Desktop · OpenAI (ChatGPT desktop / Agents SDK) ·
+Google Gemini (Gemini CLI) · GitHub Copilot (VS Code) · Cursor · Windsurf ·
+Cline · Zed — and any other client that speaks MCP.
+
+First install the package:
+
 ```bash
 pip install backburner-mcp
 ```
@@ -92,7 +135,10 @@ pip install backburner-mcp
 claude mcp add backburner -- python -m backburner.server
 ```
 
-### Claude Desktop / other clients
+### Everything else (Claude Desktop, Cursor, VS Code / Copilot, Windsurf, Gemini CLI, …)
+
+Most clients use the same standard config block — add `backburner` to your
+client's MCP config (see your client's docs for where that file lives):
 
 ```json
 {
@@ -119,8 +165,9 @@ use `BACKBURNER_ALLOW` / `BACKBURNER_DENY` to scope what may run.
 - [x] Allowlist/denylist for commands
 - [x] PyPI release — `pip install backburner-mcp`
 - [x] Listed on the official MCP Registry
-- [ ] MCP Tasks extension support (spec 2026-07-28) — native `tasks/get`,
-      `tasks/cancel` alongside the plain tools
+- [x] MCP Tasks extension (spec 2026-07-28, SEP-2663) — native `tasks/get` /
+      `tasks/update` / `tasks/cancel` alongside the plain tools
+- [ ] Task push updates (`notifications/tasks`) — live status without polling
 - [ ] Local web dashboard — watch tasks live in the browser
 - [ ] Structured progress reporting (parse % / step markers from output)
 

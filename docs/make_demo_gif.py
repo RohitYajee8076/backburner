@@ -5,7 +5,7 @@ Run from the repo root:  python docs/make_demo_gif.py  ->  docs/demo.gif
 from PIL import Image, ImageDraw, ImageFont
 
 FONT = ImageFont.truetype("C:/Windows/Fonts/CascadiaMono.ttf", 17)
-W, H = 860, 430
+W, H = 860, 470
 BG = (13, 17, 23)        # GitHub dark
 BAR = (33, 38, 45)
 FG = (201, 209, 217)
@@ -16,22 +16,26 @@ DIM = (110, 118, 129)
 LINE_H = 26
 PAD_X, PAD_TOP = 22, 56
 
-# (text, color, typed?)  -- typed lines animate char by char
+# (text, color, typed?)  -- typed lines animate char by char.
+# The story: start a long job, close the client entirely, come back in a brand
+# new session -- the task and its result are still there. That is the thing a
+# client's in-session background trick cannot do.
 SCRIPT = [
-    ("agent> start_task(\"pytest -q\")", GREEN, True),
-    ("  { \"task_id\": \"a1b2c3d4\", \"status\": \"working\" }", FG, False),
+    ("you> start_task(\"python nightly_report.py\")", GREEN, True),
+    ("  { \"task_id\": \"4ed14b58\", \"status\": \"working\" }", FG, False),
     ("", FG, False),
-    ("  ...the agent keeps working on other things...", DIM, False),
+    ("  # keep chatting... then close the client and shut the laptop", DIM, False),
     ("", FG, False),
-    ("agent> task_result(\"a1b2c3d4\")        # peek mid-run", GREEN, True),
-    ("  { \"status\": \"working\",", FG, False),
-    ("    \"output\": \"tests/test_api.py ........ [ 41%]\" }", FG, False),
+    ("- - - - -  new chat, next morning  - - - - -", YELLOW, False),
     ("", FG, False),
-    ("agent> task_status(\"a1b2c3d4\")", GREEN, True),
-    ("  { \"status\": \"completed\", \"duration_seconds\": 312 }", CYAN, False),
+    ("you> list_tasks()          # a fresh session, no task id in hand", GREEN, True),
+    ("  [ { \"task_id\": \"4ed14b58\",", FG, False),
+    ("      \"status\": \"completed\" } ]      <- still here", CYAN, False),
     ("", FG, False),
-    ("agent> task_result(\"a1b2c3d4\")", GREEN, True),
-    ("  { \"output\": \"418 passed in 311.2s\" }", YELLOW, False),
+    ("you> task_result(\"4ed14b58\")", GREEN, True),
+    ("  { \"output\": \"REPORT READY: 4182 rows written\" }", YELLOW, False),
+    ("", FG, False),
+    ("  # it survived the session that started it.", DIM, False),
 ]
 
 

@@ -22,7 +22,7 @@ def test_every_tool_has_a_description():
 
 def test_start_task_accepts_timeout_parameter():
     tools = {t.name: t for t in asyncio.run(mcp.list_tools())}
-    props = tools["start_task"].inputSchema["properties"]
+    props = tools["start_task"].input_schema["properties"]
     assert "timeout_seconds" in props
     assert "command" in props
     assert "cwd" in props
